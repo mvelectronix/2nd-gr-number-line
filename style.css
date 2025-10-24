@@ -17,7 +17,15 @@
 }
 .btn:hover { background-color: #fde047; }
 
-#numberLine { top: 50%; transform: translateY(-50%); }
+.label-title {
+  position: absolute;
+  top: 0.25rem;
+  left: 0.5rem;
+  font-weight: 700;
+  color: #000;
+  font-size: 0.85rem;
+}
+
 .marker {
   position: absolute;
   top: calc(50% - 14px);
