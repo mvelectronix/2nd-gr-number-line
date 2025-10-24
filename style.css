@@ -1,65 +1,79 @@
+/* Controls */
 .input-box {
   background-color: #1f2937;
   border: 2px solid #facc15;
   border-radius: 0.5rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
   color: white;
-  width: 120px;
+  width: 140px;
   text-align: center;
 }
-
 .btn {
   background-color: #facc15;
   color: #1f2937;
-  font-weight: bold;
-  padding: 0.5rem 1rem;
+  font-weight: 700;
+  padding: 0.5rem 0.9rem;
   border-radius: 0.5rem;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.15s ease;
 }
+.btn:hover { background-color: #fde047; }
 
-.btn:hover {
-  background-color: #fde047;
-}
-
-/* Properly centered baseline */
+/* Line sits vertically centered in its container panel */
 #numberLine {
   top: 50%;
+  transform: translateY(-50%);
 }
 
+/* Ticks (centered on their x-position) */
 .marker {
   position: absolute;
-  top: calc(50% - 10px);
+  top: calc(50% - 14px);    /* extends above and below the baseline */
   width: 2px;
-  height: 20px;
-  background-color: #facc15;
+  height: 28px;
+  background-color: #111;   /* black ticks */
+  transform: translateX(-50%);
 }
 
+/* Labels below the line, centered horizontally */
 .label {
   position: absolute;
-  top: calc(50% + 24px);
-  font-size: 0.8rem;
+  top: calc(50% + 22px);
   transform: translateX(-50%);
-  color: #e5e7eb;
+  font-size: 10px;           /* small so 0–100 fits */
+  line-height: 1;
+  color: #000;               /* black numbers as requested */
+  user-select: none;
+  white-space: nowrap;
 }
 
+/* Cursor (blue circle) centered exactly on tick position */
 .cursor {
   position: absolute;
-  top: calc(50% - 10px);
+  top: calc(50% - 10px);     /* centered on the line */
   width: 20px;
   height: 20px;
   border-radius: 9999px;
   background-color: #38bdf8;
   transform: translateX(-50%);
-  transition: left 0.3s ease;
+  transition: left 0.25s ease;
   box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
 }
 
+/* Footprints (green dots) centered on tick position */
 .footprint {
   position: absolute;
   top: calc(50% - 5px);
   width: 10px;
   height: 10px;
-  background-color: #22c55e;
-  border-radius: 50%;
+  background-color: #16a34a;
+  border-radius: 9999px;
   transform: translateX(-50%);
+}
+
+/* Responsive helpers for tight screens */
+@media (max-width: 768px) {
+  .label { font-size: 9px; }
+}
+@media (max-width: 480px) {
+  .label { font-size: 8px; }
 }
