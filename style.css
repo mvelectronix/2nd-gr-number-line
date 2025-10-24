@@ -21,36 +21,46 @@
   background-color: #fde047;
 }
 
+/* Make the line slightly higher so labels fit below it comfortably */
+#numberLine {
+  top: 50%;
+}
+
+/* Tick marks */
 .marker {
   position: absolute;
-  top: 35%;
+  top: calc(50% - 10px);
   width: 2px;
   height: 20px;
   background-color: #facc15;
 }
 
+/* Number labels neatly spaced under the line */
 .label {
   position: absolute;
-  top: 55%;
-  font-size: 0.7rem;
+  top: calc(50% + 24px);
+  font-size: 0.8rem;
   transform: translateX(-50%);
   color: #e5e7eb;
 }
 
+/* Blue circle cursor positioned right on top of the line */
 .cursor {
   position: absolute;
-  top: 10%;
-  width: 18px;
-  height: 18px;
+  top: calc(50% - 10px);
+  width: 20px;
+  height: 20px;
   border-radius: 9999px;
   background-color: #38bdf8;
   transform: translateX(-50%);
   transition: left 0.3s ease;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
 }
 
+/* Green dots marking previous jumps */
 .footprint {
   position: absolute;
-  top: 10%;
+  top: calc(50% - 5px);
   width: 10px;
   height: 10px;
   background-color: #22c55e;
