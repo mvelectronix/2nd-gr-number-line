@@ -1,22 +1,21 @@
-const min = -20;
-const max = 120;
-
-const lines = [
-  document.getElementById("line1"),
-  document.getElementById("line2")
+// Define two independent ranges
+const ranges = [
+  { min: 0, max: 50, container: document.getElementById("line1") },
+  { min: 51, max: 100, container: document.getElementById("line2") }
 ];
 
 const currentPositionDisplay = document.getElementById("currentPosition");
 let currentValue = 0;
 let startValue = null;
 
-/* Convert number → % position */
-function toPercent(value) {
-  return ((value - min) / (max - min)) * 100;
+/* Convert a value to % position for that specific range */
+function toPercent(value, range) {
+  return ((value - range.min) / (range.max - range.min)) * 100;
 }
 
-/* Draw one number line */
-function drawLine(container) {
+/* Draw one number line for its range */
+function drawLine(range) {
+  const { container, min, max } = range;
   container.innerHTML = "";
 
   // baseline
@@ -28,12 +27,12 @@ function drawLine(container) {
 
   // ticks + labels
   for (let i = min; i <= max; i++) {
-    const x = toPercent(i);
+    const x = toPercent(i, range);
 
     const tick = document.createElement("div");
     tick.className = "marker";
     tick.style.left = `${x}%`;
-    if (i % 10 === 0) {
+    if (i % 5 === 0) {
       tick.style.height = "34px";
       tick.style.top = "calc(50% - 17px)";
       tick.style.width = "3px";
@@ -56,51 +55,62 @@ function drawLine(container) {
 
 /* Draw both lines */
 function drawAll() {
-  lines.forEach(line => drawLine(line));
+  ranges.forEach(drawLine);
   updateCursors();
 }
 
-/* Update cursors */
+/* Update all cursors based on current value */
 function updateCursors() {
-  lines.forEach(line => {
-    const cursor = line.querySelector(".cursor");
-    if (cursor) {
-      cursor.style.left = `${toPercent(currentValue)}%`;
+  ranges.forEach(range => {
+    const cursor = range.container.querySelector(".cursor");
+
+    // Only show cursor if the value falls within this line’s range
+    if (currentValue >= range.min && currentValue <= range.max) {
+      cursor.style.display = "block";
+      cursor.style.left = `${toPercent(currentValue, range)}%`;
+    } else {
+      cursor.style.display = "none";
     }
   });
+
   currentPositionDisplay.textContent = `Current number: ${currentValue}`;
 }
 
-/* Leave a footprint on each line */
+/* Drop footprints if within visible line */
 function leaveFootprints() {
-  lines.forEach(line => {
-    const footprint = document.createElement("div");
-    footprint.className = "footprint";
-    footprint.style.left = `${toPercent(currentValue)}%`;
-    line.appendChild(footprint);
+  ranges.forEach(range => {
+    if (currentValue >= range.min && currentValue <= range.max) {
+      const footprint = document.createElement("div");
+      footprint.className = "footprint";
+      footprint.style.left = `${toPercent(currentValue, range)}%`;
+      range.container.appendChild(footprint);
+    }
   });
 }
 
-/* Mark starting position */
+/* Mark start label on appropriate line */
 function markStartPosition(value) {
-  lines.forEach(line => {
-    line.querySelectorAll(".start-label").forEach(l => l.remove());
-    const label = document.createElement("div");
-    label.className = "start-label";
-    label.style.left = `${toPercent(value)}%`;
-    label.textContent = `Start: ${value}`;
-    line.appendChild(label);
+  ranges.forEach(range => {
+    range.container.querySelectorAll(".start-label").forEach(l => l.remove());
+    if (value >= range.min && value <= range.max) {
+      const label = document.createElement("div");
+      label.className = "start-label";
+      label.style.left = `${toPercent(value, range)}%`;
+      label.textContent = `Start: ${value}`;
+      range.container.appendChild(label);
+    }
   });
 }
 
-/* Move by a given amount (±1 or ±10) */
+/* Move step-by-step */
 function moveBy(amount) {
   const step = amount > 0 ? 1 : -1;
   const steps = Math.abs(amount);
 
   for (let i = 0; i < steps; i++) {
-    const next = currentValue + step;
-    if (next < min || next > max) break;
+    let next = currentValue + step;
+    if (next < ranges[0].min) next = ranges[0].min;
+    if (next > ranges[1].max) next = ranges[1].max;
     currentValue = next;
     if (startValue !== null && currentValue !== startValue) {
       leaveFootprints();
@@ -109,16 +119,20 @@ function moveBy(amount) {
   updateCursors();
 }
 
-/* --- Buttons --- */
+/* Controls */
 document.getElementById("setStartBtn").addEventListener("click", () => {
   const val = parseInt(document.getElementById("startNum").value, 10);
-  if (Number.isNaN(val) || val < min || val > max) {
-    alert(`Please choose a number between ${min} and ${max}`);
+  const overallMin = ranges[0].min;
+  const overallMax = ranges[ranges.length - 1].max;
+
+  if (Number.isNaN(val) || val < overallMin || val > overallMax) {
+    alert(`Please choose a number between ${overallMin} and ${overallMax}`);
     return;
   }
-  lines.forEach(line => {
-    line.querySelectorAll(".footprint, .start-label").forEach(f => f.remove());
-  });
+
+  ranges.forEach(r =>
+    r.container.querySelectorAll(".footprint, .start-label").forEach(f => f.remove())
+  );
   startValue = val;
   currentValue = val;
   markStartPosition(val);
@@ -131,9 +145,9 @@ document.getElementById("stepForward10Btn").addEventListener("click", () => move
 document.getElementById("stepBack10Btn").addEventListener("click", () => moveBy(-10));
 
 document.getElementById("resetBtn").addEventListener("click", () => {
-  lines.forEach(line => {
-    line.querySelectorAll(".footprint, .start-label").forEach(f => f.remove());
-  });
+  ranges.forEach(r =>
+    r.container.querySelectorAll(".footprint, .start-label").forEach(f => f.remove())
+  );
   currentValue = 0;
   startValue = null;
   updateCursors();
