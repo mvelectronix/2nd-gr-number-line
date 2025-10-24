@@ -1,68 +1,64 @@
 const min = -20, max = 120;
-const lines = [document.getElementById("topLine"), document.getElementById("bottomLine")];
+const lines = [document.getElementById("line1"), document.getElementById("line2")];
 const currentPositionDisplay = document.getElementById("currentPosition");
 let currentValue = 0;
 let startValue = null;
 
-/* Convert number → % position */
 function toPercent(value) {
   return ((value - min) / (max - min)) * 100;
 }
 
-/* Draw each number line */
-function drawLines() {
-  lines.forEach(line => {
-    line.innerHTML = ''; // clear it before drawing
+function drawLine(container) {
+  container.innerHTML = "";
 
-    // baseline
-    const baseline = document.createElement("div");
-    baseline.className = "absolute left-0 right-0 h-1 bg-black";
-    baseline.style.top = "50%";
-    baseline.style.transform = "translateY(-50%)";
-    line.appendChild(baseline);
+  // baseline
+  const baseline = document.createElement("div");
+  baseline.className = "absolute left-0 right-0 h-1 bg-black";
+  baseline.style.top = "50%";
+  baseline.style.transform = "translateY(-50%)";
+  container.appendChild(baseline);
 
-    // ticks + labels
-    for (let i = min; i <= max; i++) {
-      const x = toPercent(i);
+  // ticks + labels
+  for (let i = min; i <= max; i++) {
+    const x = toPercent(i);
 
-      const tick = document.createElement("div");
-      tick.className = "marker";
-      tick.style.left = `${x}%`;
-      if (i % 10 === 0) {
-        tick.style.height = "34px";
-        tick.style.top = "calc(50% - 17px)";
-        tick.style.width = "3px";
-      }
-      line.appendChild(tick);
-
-      const label = document.createElement("div");
-      label.className = "label";
-      label.style.left = `${x}%`;
-      label.textContent = i;
-      line.appendChild(label);
+    const tick = document.createElement("div");
+    tick.className = "marker";
+    tick.style.left = `${x}%`;
+    if (i % 10 === 0) {
+      tick.style.height = "34px";
+      tick.style.top = "calc(50% - 17px)";
+      tick.style.width = "3px";
     }
+    container.appendChild(tick);
 
-    // cursor
-    const cursor = document.createElement("div");
-    cursor.className = "cursor";
-    cursor.id = "cursor-" + line.id;
-    line.appendChild(cursor);
-  });
+    const label = document.createElement("div");
+    label.className = "label";
+    label.style.left = `${x}%`;
+    label.textContent = i;
+    container.appendChild(label);
+  }
 
+  // cursor
+  const cursor = document.createElement("div");
+  cursor.className = "cursor";
+  cursor.id = "cursor-" + container.id;
+  container.appendChild(cursor);
+}
+
+function drawAll() {
+  lines.forEach(drawLine);
   updateCursors();
 }
 
-/* Update all cursors */
 function updateCursors() {
   lines.forEach(line => {
     const cursor = line.querySelector(".cursor");
-    if (!cursor) return;
-    cursor.style.left = `${toPercent(currentValue)}%`;
+    if (cursor) cursor.style.left = `${toPercent(currentValue)}%`;
   });
   currentPositionDisplay.textContent = `Current number: ${currentValue}`;
 }
 
-/* Leave green footprints on both lines */
 function leaveFootprints() {
   lines.forEach(line => {
     const footprint = document.createElement("div");
@@ -72,7 +68,6 @@ function leaveFootprints() {
   });
 }
 
-/* Mark red Start label */
 function markStartPosition(value) {
   lines.forEach(line => {
     line.querySelectorAll(".start-label").forEach(l => l.remove());
@@ -84,7 +79,6 @@ function markStartPosition(value) {
   });
 }
 
-/* Move step-by-step */
 function moveBy(amount) {
   const step = amount > 0 ? 1 : -1;
   const steps = Math.abs(amount);
@@ -98,14 +92,13 @@ function moveBy(amount) {
   updateCursors();
 }
 
-/* Controls */
+/* Button events */
 document.getElementById("setStartBtn").addEventListener("click", () => {
   const val = parseInt(document.getElementById("startNum").value, 10);
   if (Number.isNaN(val) || val < min || val > max) {
     alert(`Please choose a number between ${min} and ${max}`);
     return;
   }
-
   lines.forEach(line => line.querySelectorAll(".footprint, .start-label").forEach(f => f.remove()));
   startValue = val;
   currentValue = val;
@@ -113,4 +106,17 @@ document.getElementById("setStartBtn").addEventListener("click", () => {
   updateCursors();
 });
 
-document.getElementById("stepForwardBtn"
+document.getElementById("stepForwardBtn").addEventListener("click", () => moveBy(1));
+document.getElementById("stepBackBtn").addEventListener("click", () => moveBy(-1));
+document.getElementById("stepForward10Btn").addEventListener("click", () => moveBy(10));
+document.getElementById("stepBack10Btn").addEventListener("click", () => moveBy(-10));
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  lines.forEach(line => line.querySelectorAll(".footprint, .start-label").forEach(f => f.remove()));
+  currentValue = 0;
+  startValue = null;
+  updateCursors();
+});
+
+/* Initialize */
+window.addEventListener("load", drawAll);
