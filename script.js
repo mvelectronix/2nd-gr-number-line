@@ -4,15 +4,22 @@ const currentPositionDisplay = document.getElementById("currentPosition");
 let currentValue = 0;
 let startValue = null;
 
-/* Convert a number (0–100) into a % position */
+/* Convert a number (0–100) into % position */
 function toPercent(value) {
   return ((value - min) / (max - min)) * 100;
 }
 
-/* Draw number line */
+/* Draw number line ONCE — we don’t rebuild it later */
 function drawNumberLine() {
-  container.innerHTML = '<div id="numberLine" class="absolute left-0 right-0 h-1 bg-black"></div>';
+  // Baseline
+  const line = document.createElement("div");
+  line.id = "numberLine";
+  line.className = "absolute left-0 right-0 h-1 bg-black";
+  line.style.top = "50%";
+  line.style.transform = "translateY(-50%)";
+  container.appendChild(line);
 
+  // Ticks and labels
   for (let i = min; i <= max; i++) {
     const x = toPercent(i);
 
@@ -29,10 +36,11 @@ function drawNumberLine() {
     const label = document.createElement("div");
     label.className = "label";
     label.style.left = `${x}%`;
-    label.textContent = i;
+    label.textContent = i.toString();
     container.appendChild(label);
   }
 
+  // Blue cursor
   const cursor = document.createElement("div");
   cursor.id = "cursor";
   cursor.className = "cursor";
@@ -41,7 +49,7 @@ function drawNumberLine() {
   updateCursor();
 }
 
-/* Update cursor */
+/* Update cursor and status text */
 function updateCursor() {
   const cursor = document.getElementById("cursor");
   if (!cursor) return;
@@ -49,7 +57,7 @@ function updateCursor() {
   currentPositionDisplay.textContent = `Current number: ${currentValue}`;
 }
 
-/* Leave a green footprint */
+/* Leave a footprint for actual moves */
 function leaveFootprint() {
   const footprint = document.createElement("div");
   footprint.className = "footprint";
@@ -57,11 +65,12 @@ function leaveFootprint() {
   container.appendChild(footprint);
 }
 
-/* Mark the starting position */
+/* Mark the start number with a red label */
 function markStartPosition(value) {
-  // Remove any existing start label
-  container.querySelectorAll(".start-label").forEach(l => l.remove());
-  // Add start label
+  // Remove any existing label first
+  const existing = container.querySelector(".start-label");
+  if (existing) existing.remove();
+
   const label = document.createElement("div");
   label.className = "start-label";
   label.style.left = `${toPercent(value)}%`;
@@ -69,7 +78,8 @@ function markStartPosition(value) {
   container.appendChild(label);
 }
 
-/* Buttons */
+/* ===== Buttons ===== */
+
 document.getElementById("setStartBtn").addEventListener("click", () => {
   const val = parseInt(document.getElementById("startNum").value, 10);
   if (Number.isNaN(val) || val < min || val > max) {
@@ -77,8 +87,10 @@ document.getElementById("setStartBtn").addEventListener("click", () => {
     return;
   }
 
-  // Clear all footprints and labels
-  container.querySelectorAll(".footprint, .start-label").forEach(f => f.remove());
+  // Remove old footprints and start labels only
+  container.querySelectorAll(".footprint, .start-label").forEach(el => el.remove());
+
+  // Set and label the new start
   startValue = val;
   currentValue = val;
   markStartPosition(val);
@@ -88,7 +100,7 @@ document.getElementById("setStartBtn").addEventListener("click", () => {
 document.getElementById("stepForwardBtn").addEventListener("click", () => {
   if (currentValue < max) {
     currentValue += 1;
-    // Only drop footprints for steps AFTER the starting number
+    // Drop footprints ONLY after the first move
     if (startValue !== null && currentValue !== startValue) leaveFootprint();
     updateCursor();
   }
@@ -103,11 +115,12 @@ document.getElementById("stepBackBtn").addEventListener("click", () => {
 });
 
 document.getElementById("resetBtn").addEventListener("click", () => {
-  container.querySelectorAll(".footprint, .start-label").forEach(f => f.remove());
+  container.querySelectorAll(".footprint, .start-label").forEach(el => el.remove());
   currentValue = 0;
   startValue = null;
   updateCursor();
 });
 
-window.addEventListener("load", drawNumberLine);
-window.addEventListener("resize", drawNumberLine);
+/* ===== Initialize ===== */
+window.addEventListener("load", () => {
+  drawNumberLine(
