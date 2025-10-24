@@ -1,9 +1,10 @@
-// Generate the number line dynamically
-const numberLineContainer = document.getElementById("numberLineContainer");
 const min = -10, max = 10;
-const lineWidth = numberLineContainer.clientWidth;
-const stepWidth = lineWidth / (max - min);
+const container = document.getElementById("numberLineContainer");
+const containerWidth = container.clientWidth;
+const stepWidth = containerWidth / (max - min);
+const currentPositionDisplay = document.getElementById("currentPosition");
 
+// Draw number line
 for (let i = min; i <= max; i++) {
   const x = ((i - min) / (max - min)) * 100;
   const tick = document.createElement("div");
@@ -15,44 +16,62 @@ for (let i = min; i <= max; i++) {
   label.style.left = `${x}%`;
   label.textContent = i;
 
-  numberLineContainer.appendChild(tick);
-  numberLineContainer.appendChild(label);
+  container.appendChild(tick);
+  container.appendChild(label);
 }
 
-document.getElementById("calculateBtn").addEventListener("click", () => {
-  const num1 = parseInt(document.getElementById("num1").value);
-  const num2 = parseInt(document.getElementById("num2").value);
-  const operation = document.getElementById("operation").value;
-  const resultDisplay = document.getElementById("result");
+// Add cursor (movable marker)
+const cursor = document.createElement("div");
+cursor.classList.add("cursor");
+container.appendChild(cursor);
 
-  if (isNaN(num1) || isNaN(num2)) {
-    resultDisplay.textContent = "Please enter both numbers!";
+let currentValue = 0;
+
+function updateCursor() {
+  const x = ((currentValue - min) / (max - min)) * containerWidth;
+  cursor.style.left = `${x}px`;
+  currentPositionDisplay.textContent = `Current number: ${currentValue}`;
+}
+
+// Create footprint
+function leaveFootprint() {
+  const footprint = document.createElement("div");
+  footprint.classList.add("footprint");
+  const x = ((currentValue - min) / (max - min)) * containerWidth;
+  footprint.style.left = `${x}px`;
+  container.appendChild(footprint);
+}
+
+document.getElementById("setStartBtn").addEventListener("click", () => {
+  const val = parseInt(document.getElementById("startNum").value);
+  if (isNaN(val) || val < min || val > max) {
+    alert(`Please choose a number between ${min} and ${max}`);
     return;
   }
-
-  let result = operation === "add" ? num1 + num2 : num1 - num2;
-  resultDisplay.textContent = `${num1} ${operation === "add" ? "+" : "−"} ${num2} = ${result}`;
-
-  drawJump(num1, num2, operation);
+  currentValue = val;
+  updateCursor();
 });
 
-function drawJump(start, value, op) {
-  // Remove any existing jumps
-  document.querySelectorAll(".jump").forEach(el => el.remove());
+document.getElementById("stepForwardBtn").addEventListener("click", () => {
+  if (currentValue < max) {
+    leaveFootprint();
+    currentValue += 1;
+    updateCursor();
+  }
+});
 
-  const containerWidth = numberLineContainer.clientWidth;
-  const startX = ((start - min) / (max - min)) * containerWidth;
-  const direction = op === "add" ? 1 : -1;
-  const endX = ((start + direction * value - min) / (max - min)) * containerWidth;
+document.getElementById("stepBackBtn").addEventListener("click", () => {
+  if (currentValue > min) {
+    leaveFootprint();
+    currentValue -= 1;
+    updateCursor();
+  }
+});
 
-  const jump = document.createElement("div");
-  jump.classList.add("jump");
-  jump.style.left = `${startX}px`;
-  jump.style.width = "0px";
-  numberLineContainer.appendChild(jump);
+document.getElementById("resetBtn").addEventListener("click", () => {
+  container.querySelectorAll(".footprint").forEach(f => f.remove());
+  currentValue = 0;
+  updateCursor();
+});
 
-  setTimeout(() => {
-    jump.style.width = `${Math.abs(endX - startX)}px`;
-    if (direction === -1) jump.style.left = `${endX}px`;
-  }, 100);
-}
+updateCursor(); // Initialize
