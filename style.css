@@ -31,10 +31,8 @@
   top: calc(50% + 22px);
   transform: translateX(-50%);
   font-size: 9px;
-  line-height: 1;
   color: #000;
   user-select: none;
-  white-space: nowrap;
 }
 .cursor {
   position: absolute;
