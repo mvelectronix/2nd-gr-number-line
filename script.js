@@ -63,4 +63,51 @@ function markStartPosition(value) {
   container.querySelectorAll(".start-label").forEach(l => l.remove());
   // Add start label
   const label = document.createElement("div");
-  label.className =
+  label.className = "start-label";
+  label.style.left = `${toPercent(value)}%`;
+  label.textContent = `Start: ${value}`;
+  container.appendChild(label);
+}
+
+/* Buttons */
+document.getElementById("setStartBtn").addEventListener("click", () => {
+  const val = parseInt(document.getElementById("startNum").value, 10);
+  if (Number.isNaN(val) || val < min || val > max) {
+    alert(`Please choose a number between ${min} and ${max}`);
+    return;
+  }
+
+  // Clear all footprints and labels
+  container.querySelectorAll(".footprint, .start-label").forEach(f => f.remove());
+  startValue = val;
+  currentValue = val;
+  markStartPosition(val);
+  updateCursor();
+});
+
+document.getElementById("stepForwardBtn").addEventListener("click", () => {
+  if (currentValue < max) {
+    currentValue += 1;
+    // Only drop footprints for steps AFTER the starting number
+    if (startValue !== null && currentValue !== startValue) leaveFootprint();
+    updateCursor();
+  }
+});
+
+document.getElementById("stepBackBtn").addEventListener("click", () => {
+  if (currentValue > min) {
+    currentValue -= 1;
+    if (startValue !== null && currentValue !== startValue) leaveFootprint();
+    updateCursor();
+  }
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  container.querySelectorAll(".footprint, .start-label").forEach(f => f.remove());
+  currentValue = 0;
+  startValue = null;
+  updateCursor();
+});
+
+window.addEventListener("load", drawNumberLine);
+window.addEventListener("resize", drawNumberLine);
