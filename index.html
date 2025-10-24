@@ -2,29 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Interactive Number Line 0–100</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.0/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-900 text-white flex flex-col items-center min-h-screen p-6">
-  <h1 class="text-3xl font-bold mb-6 text-yellow-400">Number Line 0–100 🧮</h1>
+<body class="bg-gray-900 text-white min-h-screen p-6">
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6 text-yellow-400">Number Line 0–100 🧮</h1>
 
-  <!-- Controls -->
-  <div class="flex flex-col sm:flex-row gap-4 items-center mb-8">
-    <input id="startNum" type="number" placeholder="Start at..." class="input-box">
-    <button id="setStartBtn" class="btn">Set Start</button>
-    <button id="stepBackBtn" class="btn">← Step Back (−1)</button>
-    <button id="stepForwardBtn" class="btn">Step Forward (+1) →</button>
-    <button id="resetBtn" class="btn bg-red-400 hover:bg-red-300">Clear</button>
+    <!-- Controls -->
+    <div class="flex flex-wrap gap-3 items-center mb-6">
+      <input id="startNum" type="number" placeholder="Start at..." class="input-box" min="0" max="100">
+      <button id="setStartBtn" class="btn">Set Start</button>
+      <button id="stepBackBtn" class="btn">← Step −1</button>
+      <button id="stepForwardBtn" class="btn">Step +1 →</button>
+      <button id="resetBtn" class="btn bg-red-400 hover:bg-red-300">Clear</button>
+    </div>
+
+    <!-- White panel so black labels are readable -->
+    <div class="rounded-xl shadow-lg p-4 bg-white">
+      <!-- Number line area -->
+      <div id="numberLineContainer" class="relative w-full h-44">
+        <div id="numberLine" class="absolute left-0 right-0 h-1 bg-black"></div>
+      </div>
+    </div>
+
+    <p id="currentPosition" class="text-xl mt-6">Current number: 0</p>
   </div>
-
-  <!-- Number line -->
-  <div id="numberLineContainer" class="relative w-full max-w-5xl h-32 mt-4">
-    <div id="numberLine" class="absolute inset-x-0 top-1/2 h-1 bg-white"></div>
-  </div>
-
-  <p id="currentPosition" class="text-xl mt-6"></p>
 
   <script src="script.js"></script>
 </body>
