@@ -32,7 +32,7 @@
 .label {
   position: absolute;
   top: 55%;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   transform: translateX(-50%);
   color: #e5e7eb;
 }
@@ -40,12 +40,12 @@
 .cursor {
   position: absolute;
   top: 10%;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 9999px;
   background-color: #38bdf8;
   transform: translateX(-50%);
-  transition: left 0.4s ease;
+  transition: left 0.3s ease;
 }
 
 .footprint {
