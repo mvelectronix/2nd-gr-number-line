@@ -1,39 +1,45 @@
 const min = -10, max = 10;
 const container = document.getElementById("numberLineContainer");
-const containerWidth = container.clientWidth;
-const stepWidth = containerWidth / (max - min);
 const currentPositionDisplay = document.getElementById("currentPosition");
+let containerWidth, stepWidth, currentValue = 0;
 
-// Draw number line
-for (let i = min; i <= max; i++) {
-  const x = ((i - min) / (max - min)) * 100;
-  const tick = document.createElement("div");
-  tick.classList.add("marker");
-  tick.style.left = `${x}%`;
+// Create number line ticks and labels
+function drawNumberLine() {
+  container.innerHTML = '<div id="numberLine" class="absolute inset-x-0 top-1/2 h-1 bg-white"></div>';
+  containerWidth = container.clientWidth;
+  stepWidth = containerWidth / (max - min);
 
-  const label = document.createElement("div");
-  label.classList.add("label");
-  label.style.left = `${x}%`;
-  label.textContent = i;
+  for (let i = min; i <= max; i++) {
+    const x = ((i - min) / (max - min)) * 100;
+    const tick = document.createElement("div");
+    tick.classList.add("marker");
+    tick.style.left = `${x}%`;
 
-  container.appendChild(tick);
-  container.appendChild(label);
+    const label = document.createElement("div");
+    label.classList.add("label");
+    label.style.left = `${x}%`;
+    label.textContent = i;
+
+    container.appendChild(tick);
+    container.appendChild(label);
+  }
+
+  // Add the blue cursor
+  const cursor = document.createElement("div");
+  cursor.classList.add("cursor");
+  cursor.id = "cursor";
+  container.appendChild(cursor);
+  updateCursor();
 }
 
-// Add cursor (movable marker)
-const cursor = document.createElement("div");
-cursor.classList.add("cursor");
-container.appendChild(cursor);
-
-let currentValue = 0;
-
 function updateCursor() {
+  const cursor = document.getElementById("cursor");
+  if (!cursor) return;
   const x = ((currentValue - min) / (max - min)) * containerWidth;
   cursor.style.left = `${x}px`;
   currentPositionDisplay.textContent = `Current number: ${currentValue}`;
 }
 
-// Create footprint
 function leaveFootprint() {
   const footprint = document.createElement("div");
   footprint.classList.add("footprint");
@@ -74,4 +80,8 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   updateCursor();
 });
 
-updateCursor(); // Initialize
+// Redraw when page loads and when resized
+window.addEventListener("load", drawNumberLine);
+window.addEventListener("resize", () => {
+  drawNumberLine(); // redraw line and reposition cursor
+});
