@@ -9,10 +9,10 @@
 </head>
 <body class="bg-gray-900 text-white min-h-screen p-6">
   <div class="max-w-6xl mx-auto">
-    <h1 class="text-3xl font-bold mb-6 text-yellow-400">Dual Number Line Explorer 🧮</h1>
+    <h1 class="text-3xl font-bold mb-6 text-yellow-400 text-center">Dual Number Line Explorer 🧮</h1>
 
     <!-- Controls -->
-    <div class="flex flex-wrap gap-3 items-center mb-6">
+    <div class="flex flex-wrap gap-3 justify-center items-center mb-6">
       <input id="startNum" type="number" placeholder="Start at..." class="input-box" min="-20" max="120">
       <button id="setStartBtn" class="btn">Set Start</button>
 
@@ -25,17 +25,19 @@
       <button id="resetBtn" class="btn bg-red-400 hover:bg-red-300">Clear</button>
     </div>
 
-    <!-- White panel with two number lines -->
+    <!-- Number line panel -->
     <div class="rounded-xl shadow-lg bg-white divide-y divide-gray-300">
-      <div id="topLineContainer" class="relative w-full h-32 p-2">
-        <div class="label-title">Line 1</div>
+      <div class="line-wrapper">
+        <h2 class="line-title">Line 1</h2>
+        <div id="topLine" class="line-container"></div>
       </div>
-      <div id="bottomLineContainer" class="relative w-full h-32 p-2">
-        <div class="label-title">Line 2</div>
+      <div class="line-wrapper">
+        <h2 class="line-title">Line 2</h2>
+        <div id="bottomLine" class="line-container"></div>
       </div>
     </div>
 
-    <p id="currentPosition" class="text-xl mt-6">Current number: 0</p>
+    <p id="currentPosition" class="text-xl mt-6 text-center">Current number: 0</p>
   </div>
 
   <script src="script.js"></script>
