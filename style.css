@@ -1,0 +1,30 @@
+.input-box {
+  background-color: #1f2937;
+  border: 2px solid #facc15;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: white;
+  width: 100px;
+  text-align: center;
+}
+.marker {
+  position: absolute;
+  top: 45%;
+  width: 2px;
+  height: 16px;
+  background-color: #facc15;
+}
+.label {
+  position: absolute;
+  top: 60%;
+  font-size: 0.8rem;
+  transform: translateX(-50%);
+  color: #e5e7eb;
+}
+.jump {
+  position: absolute;
+  height: 3px;
+  background-color: #38bdf8;
+  border-radius: 9999px;
+  transition: all 0.8s ease;
+}
