@@ -8,9 +8,11 @@ const currentPositionDisplay = document.getElementById("currentPosition");
 let currentValue = 0;
 let startValue = null;
 
-/* Convert a value to % position for that specific range */
+/* % position with padding to avoid edge cutoff */
 function toPercent(value, range) {
-  return ((value - range.min) / (range.max - range.min)) * 100;
+  const padding = 3; // percent padding on each side
+  const usable = 100 - padding * 2;
+  return ((value - range.min) / (range.max - range.min)) * usable + padding;
 }
 
 /* Draw one number line for its range */
@@ -63,8 +65,7 @@ function drawAll() {
 function updateCursors() {
   ranges.forEach(range => {
     const cursor = range.container.querySelector(".cursor");
-
-    // Only show cursor if the value falls within this line’s range
+    if (!cursor) return;
     if (currentValue >= range.min && currentValue <= range.max) {
       cursor.style.display = "block";
       cursor.style.left = `${toPercent(currentValue, range)}%`;
@@ -72,7 +73,6 @@ function updateCursors() {
       cursor.style.display = "none";
     }
   });
-
   currentPositionDisplay.textContent = `Current number: ${currentValue}`;
 }
 
@@ -106,15 +106,15 @@ function markStartPosition(value) {
 function moveBy(amount) {
   const step = amount > 0 ? 1 : -1;
   const steps = Math.abs(amount);
+  const overallMin = ranges[0].min;
+  const overallMax = ranges[ranges.length - 1].max;
 
   for (let i = 0; i < steps; i++) {
     let next = currentValue + step;
-    if (next < ranges[0].min) next = ranges[0].min;
-    if (next > ranges[1].max) next = ranges[1].max;
+    if (next < overallMin) next = overallMin;
+    if (next > overallMax) next = overallMax;
     currentValue = next;
-    if (startValue !== null && currentValue !== startValue) {
-      leaveFootprints();
-    }
+    if (startValue !== null && currentValue !== startValue) leaveFootprints();
   }
   updateCursors();
 }
@@ -124,12 +124,10 @@ document.getElementById("setStartBtn").addEventListener("click", () => {
   const val = parseInt(document.getElementById("startNum").value, 10);
   const overallMin = ranges[0].min;
   const overallMax = ranges[ranges.length - 1].max;
-
   if (Number.isNaN(val) || val < overallMin || val > overallMax) {
     alert(`Please choose a number between ${overallMin} and ${overallMax}`);
     return;
   }
-
   ranges.forEach(r =>
     r.container.querySelectorAll(".footprint, .start-label").forEach(f => f.remove())
   );
