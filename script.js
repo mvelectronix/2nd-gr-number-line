@@ -1,4 +1,4 @@
-const min = -20, max = 120; // extended range
+const min = -20, max = 120;
 const container = document.getElementById("numberLineContainer");
 const currentPositionDisplay = document.getElementById("currentPosition");
 let currentValue = 0;
@@ -8,14 +8,10 @@ function toPercent(value) {
   return ((value - min) / (max - min)) * 100;
 }
 
-/* Draw number line */
+/* Draw number line once and keep it visible */
 function drawNumberLine() {
-  const line = document.createElement("div");
-  line.id = "numberLine";
-  line.className = "absolute left-0 right-0 h-1 bg-black";
-  line.style.top = "50%";
-  line.style.transform = "translateY(-50%)";
-  container.appendChild(line);
+  // Always start clean ONCE on load
+  container.innerHTML = '<div id="numberLine" class="absolute left-0 right-0 h-1 bg-black"></div>';
 
   for (let i = min; i <= max; i++) {
     const x = toPercent(i);
@@ -68,48 +64,39 @@ function markStartPosition(value) {
   container.appendChild(label);
 }
 
-/* Controls */
+/* Move by any amount (+1, -1, +10, -10) */
+function moveBy(amount) {
+  let newValue = currentValue + amount;
+  if (newValue < min) newValue = min;
+  if (newValue > max) newValue = max;
+  currentValue = newValue;
+  if (startValue !== null && currentValue !== startValue) leaveFootprint();
+  updateCursor();
+}
+
+/* Button Events */
 document.getElementById("setStartBtn").addEventListener("click", () => {
   const val = parseInt(document.getElementById("startNum").value, 10);
   if (Number.isNaN(val) || val < min || val > max) {
     alert(`Please choose a number between ${min} and ${max}`);
     return;
   }
-
-  container.querySelectorAll(".footprint, .start-label").forEach(el => el.remove());
+  container.querySelectorAll(".footprint, .start-label").forEach(f => f.remove());
   startValue = val;
   currentValue = val;
   markStartPosition(val);
   updateCursor();
 });
-
-/* Step by 1s */
 document.getElementById("stepForwardBtn").addEventListener("click", () => moveBy(1));
 document.getElementById("stepBackBtn").addEventListener("click", () => moveBy(-1));
-
-/* Step by 10s */
 document.getElementById("stepForward10Btn").addEventListener("click", () => moveBy(10));
 document.getElementById("stepBack10Btn").addEventListener("click", () => moveBy(-10));
-
-function moveBy(amount) {
-  let newValue = currentValue + amount;
-  if (newValue < min) newValue = min;
-  if (newValue > max) newValue = max;
-
-  currentValue = newValue;
-  if (startValue !== null && currentValue !== startValue) leaveFootprint();
-  updateCursor();
-}
-
-/* Reset */
 document.getElementById("resetBtn").addEventListener("click", () => {
-  container.querySelectorAll(".footprint, .start-label").forEach(el => el.remove());
+  container.querySelectorAll(".footprint, .start-label").forEach(f => f.remove());
   currentValue = 0;
   startValue = null;
   updateCursor();
 });
 
-window.addEventListener("load", () => {
-  drawNumberLine();
-  updateCursor();
-});
+/* Initialize */
+window.addEventListener("load", drawNumberLine);
