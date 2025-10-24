@@ -2,6 +2,7 @@ const min = 0, max = 100;
 const container = document.getElementById("numberLineContainer");
 const currentPositionDisplay = document.getElementById("currentPosition");
 let currentValue = 0;
+let startValue = null;
 
 /* Convert a number (0–100) into a % position */
 function toPercent(value) {
@@ -14,6 +15,7 @@ function drawNumberLine() {
 
   for (let i = min; i <= max; i++) {
     const x = toPercent(i);
+
     const tick = document.createElement("div");
     tick.className = "marker";
     tick.style.left = `${x}%`;
@@ -27,7 +29,7 @@ function drawNumberLine() {
     const label = document.createElement("div");
     label.className = "label";
     label.style.left = `${x}%`;
-    label.textContent = i.toString();
+    label.textContent = i;
     container.appendChild(label);
   }
 
@@ -39,7 +41,7 @@ function drawNumberLine() {
   updateCursor();
 }
 
-/* Update cursor position and text */
+/* Update cursor */
 function updateCursor() {
   const cursor = document.getElementById("cursor");
   if (!cursor) return;
@@ -47,7 +49,7 @@ function updateCursor() {
   currentPositionDisplay.textContent = `Current number: ${currentValue}`;
 }
 
-/* Add a footprint (green dot) */
+/* Leave a green footprint */
 function leaveFootprint() {
   const footprint = document.createElement("div");
   footprint.className = "footprint";
@@ -55,52 +57,10 @@ function leaveFootprint() {
   container.appendChild(footprint);
 }
 
-/* Add a permanent red label for starting position */
+/* Mark the starting position */
 function markStartPosition(value) {
   // Remove any existing start label
   container.querySelectorAll(".start-label").forEach(l => l.remove());
+  // Add start label
   const label = document.createElement("div");
-  label.className = "start-label";
-  label.style.left = `${toPercent(value)}%`;
-  label.textContent = `Start: ${value}`;
-  container.appendChild(label);
-}
-
-/* Button actions */
-document.getElementById("setStartBtn").addEventListener("click", () => {
-  const val = parseInt(document.getElementById("startNum").value, 10);
-  if (Number.isNaN(val) || val < min || val > max) {
-    alert(`Please choose a number between ${min} and ${max}`);
-    return;
-  }
-  // Clear footprints and mark start
-  container.querySelectorAll(".footprint").forEach(f => f.remove());
-  markStartPosition(val);
-  currentValue = val;
-  updateCursor();
-});
-
-document.getElementById("stepForwardBtn").addEventListener("click", () => {
-  if (currentValue < max) {
-    currentValue += 1;
-    leaveFootprint(); // leave dot *after* move
-    updateCursor();
-  }
-});
-
-document.getElementById("stepBackBtn").addEventListener("click", () => {
-  if (currentValue > min) {
-    currentValue -= 1;
-    leaveFootprint(); // leave dot *after* move
-    updateCursor();
-  }
-});
-
-document.getElementById("resetBtn").addEventListener("click", () => {
-  container.querySelectorAll(".footprint, .start-label").forEach(f => f.remove());
-  currentValue = 0;
-  updateCursor();
-});
-
-window.addEventListener("load", drawNumberLine);
-window.addEventListener("resize", drawNumberLine);
+  label.className =
