@@ -1,13 +1,21 @@
-const min = -20, max = 120;
-const lines = [document.getElementById("line1"), document.getElementById("line2")];
+const min = -20;
+const max = 120;
+
+const lines = [
+  document.getElementById("line1"),
+  document.getElementById("line2")
+];
+
 const currentPositionDisplay = document.getElementById("currentPosition");
 let currentValue = 0;
 let startValue = null;
 
+/* Convert number → % position */
 function toPercent(value) {
   return ((value - min) / (max - min)) * 100;
 }
 
+/* Draw one number line */
 function drawLine(container) {
   container.innerHTML = "";
 
@@ -35,30 +43,35 @@ function drawLine(container) {
     const label = document.createElement("div");
     label.className = "label";
     label.style.left = `${x}%`;
-    label.textContent = i;
+    label.textContent = i.toString();
     container.appendChild(label);
   }
 
   // cursor
   const cursor = document.createElement("div");
   cursor.className = "cursor";
-  cursor.id = "cursor-" + container.id;
+  cursor.id = `cursor-${container.id}`;
   container.appendChild(cursor);
 }
 
+/* Draw both lines */
 function drawAll() {
-  lines.forEach(drawLine);
+  lines.forEach(line => drawLine(line));
   updateCursors();
 }
 
+/* Update cursors */
 function updateCursors() {
   lines.forEach(line => {
     const cursor = line.querySelector(".cursor");
-    if (cursor) cursor.style.left = `${toPercent(currentValue)}%`;
+    if (cursor) {
+      cursor.style.left = `${toPercent(currentValue)}%`;
+    }
   });
   currentPositionDisplay.textContent = `Current number: ${currentValue}`;
 }
 
+/* Leave a footprint on each line */
 function leaveFootprints() {
   lines.forEach(line => {
     const footprint = document.createElement("div");
@@ -68,6 +81,7 @@ function leaveFootprints() {
   });
 }
 
+/* Mark starting position */
 function markStartPosition(value) {
   lines.forEach(line => {
     line.querySelectorAll(".start-label").forEach(l => l.remove());
@@ -79,6 +93,7 @@ function markStartPosition(value) {
   });
 }
 
+/* Move by a given amount (±1 or ±10) */
 function moveBy(amount) {
   const step = amount > 0 ? 1 : -1;
   const steps = Math.abs(amount);
@@ -87,19 +102,23 @@ function moveBy(amount) {
     const next = currentValue + step;
     if (next < min || next > max) break;
     currentValue = next;
-    if (startValue !== null && currentValue !== startValue) leaveFootprints();
+    if (startValue !== null && currentValue !== startValue) {
+      leaveFootprints();
+    }
   }
   updateCursors();
 }
 
-/* Button events */
+/* --- Buttons --- */
 document.getElementById("setStartBtn").addEventListener("click", () => {
   const val = parseInt(document.getElementById("startNum").value, 10);
   if (Number.isNaN(val) || val < min || val > max) {
     alert(`Please choose a number between ${min} and ${max}`);
     return;
   }
-  lines.forEach(line => line.querySelectorAll(".footprint, .start-label").forEach(f => f.remove()));
+  lines.forEach(line => {
+    line.querySelectorAll(".footprint, .start-label").forEach(f => f.remove());
+  });
   startValue = val;
   currentValue = val;
   markStartPosition(val);
@@ -112,7 +131,9 @@ document.getElementById("stepForward10Btn").addEventListener("click", () => move
 document.getElementById("stepBack10Btn").addEventListener("click", () => moveBy(-10));
 
 document.getElementById("resetBtn").addEventListener("click", () => {
-  lines.forEach(line => line.querySelectorAll(".footprint, .start-label").forEach(f => f.remove()));
+  lines.forEach(line => {
+    line.querySelectorAll(".footprint, .start-label").forEach(f => f.remove());
+  });
   currentValue = 0;
   startValue = null;
   updateCursors();
