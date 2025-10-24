@@ -7,38 +7,35 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.0/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-900 text-white min-h-screen p-6">
-  <div class="max-w-6xl mx-auto">
-    <h1 class="text-3xl font-bold mb-6 text-yellow-400 text-center">Dual Number Line Explorer 🧮</h1>
+<body class="bg-gray-900 text-white min-h-screen p-6 flex flex-col items-center">
+  <h1 class="text-3xl font-bold mb-6 text-yellow-400 text-center">
+    Dual Number Line Explorer 🧮
+  </h1>
 
-    <!-- Controls -->
-    <div class="flex flex-wrap gap-3 justify-center items-center mb-6">
-      <input id="startNum" type="number" placeholder="Start at..." class="input-box" min="-20" max="120">
-      <button id="setStartBtn" class="btn">Set Start</button>
-
-      <button id="stepBackBtn" class="btn">← Step −1</button>
-      <button id="stepForwardBtn" class="btn">Step +1 →</button>
-
-      <button id="stepBack10Btn" class="btn bg-blue-400 hover:bg-blue-300">← Step −10</button>
-      <button id="stepForward10Btn" class="btn bg-blue-400 hover:bg-blue-300">Step +10 →</button>
-
-      <button id="resetBtn" class="btn bg-red-400 hover:bg-red-300">Clear</button>
-    </div>
-
-    <!-- Number line panel -->
-    <div class="rounded-xl shadow-lg bg-white divide-y divide-gray-300">
-      <div class="line-wrapper">
-        <h2 class="line-title">Line 1</h2>
-        <div id="topLine" class="line-container"></div>
-      </div>
-      <div class="line-wrapper">
-        <h2 class="line-title">Line 2</h2>
-        <div id="bottomLine" class="line-container"></div>
-      </div>
-    </div>
-
-    <p id="currentPosition" class="text-xl mt-6 text-center">Current number: 0</p>
+  <!-- Controls -->
+  <div class="flex flex-wrap gap-3 justify-center items-center mb-6">
+    <input id="startNum" type="number" placeholder="Start at..." class="input-box" min="-20" max="120">
+    <button id="setStartBtn" class="btn">Set Start</button>
+    <button id="stepBackBtn" class="btn">← Step −1</button>
+    <button id="stepForwardBtn" class="btn">Step +1 →</button>
+    <button id="stepBack10Btn" class="btn bg-blue-400 hover:bg-blue-300">← Step −10</button>
+    <button id="stepForward10Btn" class="btn bg-blue-400 hover:bg-blue-300">Step +10 →</button>
+    <button id="resetBtn" class="btn bg-red-400 hover:bg-red-300">Clear</button>
   </div>
+
+  <!-- Number lines -->
+  <div class="bg-white rounded-xl shadow-lg divide-y divide-gray-300 w-full max-w-5xl">
+    <div class="line-section">
+      <div class="line-title">Line 1</div>
+      <div id="line1" class="numberline"></div>
+    </div>
+    <div class="line-section">
+      <div class="line-title">Line 2</div>
+      <div id="line2" class="numberline"></div>
+    </div>
+  </div>
+
+  <p id="currentPosition" class="text-xl mt-6 text-center">Current number: 0</p>
 
   <script src="script.js"></script>
 </body>
