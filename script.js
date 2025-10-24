@@ -1,23 +1,27 @@
 const min = -20, max = 120;
-const containers = [
-  document.getElementById("topLineContainer"),
-  document.getElementById("bottomLineContainer")
-];
+const lines = [document.getElementById("topLine"), document.getElementById("bottomLine")];
 const currentPositionDisplay = document.getElementById("currentPosition");
-
 let currentValue = 0;
 let startValue = null;
 
-/* Convert number → % */
+/* Convert number → % position */
 function toPercent(value) {
   return ((value - min) / (max - min)) * 100;
 }
 
-/* Draw both number lines */
-function drawNumberLines() {
-  containers.forEach(container => {
-    container.innerHTML += '<div class="absolute left-0 right-0 h-1 bg-black" style="top:50%;transform:translateY(-50%)"></div>';
+/* Draw each number line */
+function drawLines() {
+  lines.forEach(line => {
+    line.innerHTML = ''; // clear it before drawing
 
+    // baseline
+    const baseline = document.createElement("div");
+    baseline.className = "absolute left-0 right-0 h-1 bg-black";
+    baseline.style.top = "50%";
+    baseline.style.transform = "translateY(-50%)";
+    line.appendChild(baseline);
+
+    // ticks + labels
     for (let i = min; i <= max; i++) {
       const x = toPercent(i);
 
@@ -29,53 +33,58 @@ function drawNumberLines() {
         tick.style.top = "calc(50% - 17px)";
         tick.style.width = "3px";
       }
-      container.appendChild(tick);
+      line.appendChild(tick);
 
       const label = document.createElement("div");
       label.className = "label";
       label.style.left = `${x}%`;
       label.textContent = i;
-      container.appendChild(label);
+      line.appendChild(label);
     }
 
+    // cursor
     const cursor = document.createElement("div");
     cursor.className = "cursor";
-    cursor.id = "cursor-" + container.id;
-    container.appendChild(cursor);
+    cursor.id = "cursor-" + line.id;
+    line.appendChild(cursor);
   });
 
   updateCursors();
 }
 
+/* Update all cursors */
 function updateCursors() {
-  containers.forEach(container => {
-    const cursor = container.querySelector(".cursor");
+  lines.forEach(line => {
+    const cursor = line.querySelector(".cursor");
     if (!cursor) return;
     cursor.style.left = `${toPercent(currentValue)}%`;
   });
   currentPositionDisplay.textContent = `Current number: ${currentValue}`;
 }
 
+/* Leave green footprints on both lines */
 function leaveFootprints() {
-  containers.forEach(container => {
+  lines.forEach(line => {
     const footprint = document.createElement("div");
     footprint.className = "footprint";
     footprint.style.left = `${toPercent(currentValue)}%`;
-    container.appendChild(footprint);
+    line.appendChild(footprint);
   });
 }
 
+/* Mark red Start label */
 function markStartPosition(value) {
-  containers.forEach(container => {
-    container.querySelectorAll(".start-label").forEach(l => l.remove());
+  lines.forEach(line => {
+    line.querySelectorAll(".start-label").forEach(l => l.remove());
     const label = document.createElement("div");
     label.className = "start-label";
     label.style.left = `${toPercent(value)}%`;
     label.textContent = `Start: ${value}`;
-    container.appendChild(label);
+    line.appendChild(label);
   });
 }
 
+/* Move step-by-step */
 function moveBy(amount) {
   const step = amount > 0 ? 1 : -1;
   const steps = Math.abs(amount);
@@ -89,7 +98,7 @@ function moveBy(amount) {
   updateCursors();
 }
 
-/* Button handlers */
+/* Controls */
 document.getElementById("setStartBtn").addEventListener("click", () => {
   const val = parseInt(document.getElementById("startNum").value, 10);
   if (Number.isNaN(val) || val < min || val > max) {
@@ -97,23 +106,11 @@ document.getElementById("setStartBtn").addEventListener("click", () => {
     return;
   }
 
-  containers.forEach(c => c.querySelectorAll(".footprint, .start-label").forEach(f => f.remove()));
+  lines.forEach(line => line.querySelectorAll(".footprint, .start-label").forEach(f => f.remove()));
   startValue = val;
   currentValue = val;
   markStartPosition(val);
   updateCursors();
 });
 
-document.getElementById("stepForwardBtn").addEventListener("click", () => moveBy(1));
-document.getElementById("stepBackBtn").addEventListener("click", () => moveBy(-1));
-document.getElementById("stepForward10Btn").addEventListener("click", () => moveBy(10));
-document.getElementById("stepBack10Btn").addEventListener("click", () => moveBy(-10));
-
-document.getElementById("resetBtn").addEventListener("click", () => {
-  containers.forEach(c => c.querySelectorAll(".footprint, .start-label").forEach(f => f.remove()));
-  currentValue = 0;
-  startValue = null;
-  updateCursors();
-});
-
-window.addEventListener("load", drawNumberLines);
+document.getElementById("stepForwardBtn"
