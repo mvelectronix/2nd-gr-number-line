@@ -1,9 +1,9 @@
-const min = -10, max = 10;
+const min = 0, max = 100;
 const container = document.getElementById("numberLineContainer");
 const currentPositionDisplay = document.getElementById("currentPosition");
 let containerWidth, stepWidth, currentValue = 0;
 
-// Create number line ticks and labels
+// Draw number line (with labels every 5)
 function drawNumberLine() {
   container.innerHTML = '<div id="numberLine" class="absolute inset-x-0 top-1/2 h-1 bg-white"></div>';
   containerWidth = container.clientWidth;
@@ -11,20 +11,26 @@ function drawNumberLine() {
 
   for (let i = min; i <= max; i++) {
     const x = ((i - min) / (max - min)) * 100;
+
+    // Small ticks every 1, big labels every 5
     const tick = document.createElement("div");
     tick.classList.add("marker");
     tick.style.left = `${x}%`;
+    tick.style.height = i % 5 === 0 ? "20px" : "10px";
+    tick.style.backgroundColor = i % 10 === 0 ? "#facc15" : "#6b7280";
 
-    const label = document.createElement("div");
-    label.classList.add("label");
-    label.style.left = `${x}%`;
-    label.textContent = i;
+    if (i % 10 === 0) {
+      const label = document.createElement("div");
+      label.classList.add("label");
+      label.style.left = `${x}%`;
+      label.textContent = i;
+      container.appendChild(label);
+    }
 
     container.appendChild(tick);
-    container.appendChild(label);
   }
 
-  // Add the blue cursor
+  // Blue marker (cursor)
   const cursor = document.createElement("div");
   cursor.classList.add("cursor");
   cursor.id = "cursor";
@@ -48,6 +54,7 @@ function leaveFootprint() {
   container.appendChild(footprint);
 }
 
+// Button listeners
 document.getElementById("setStartBtn").addEventListener("click", () => {
   const val = parseInt(document.getElementById("startNum").value);
   if (isNaN(val) || val < min || val > max) {
@@ -80,8 +87,6 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   updateCursor();
 });
 
-// Redraw when page loads and when resized
+// Redraw when loaded or resized
 window.addEventListener("load", drawNumberLine);
-window.addEventListener("resize", () => {
-  drawNumberLine(); // redraw line and reposition cursor
-});
+window.addEventListener("resize", drawNumberLine);
