@@ -4,13 +4,13 @@ const currentPositionDisplay = document.getElementById("currentPosition");
 let currentValue = 0;
 let startValue = null;
 
+/* Convert a number to % position on the line */
 function toPercent(value) {
   return ((value - min) / (max - min)) * 100;
 }
 
-/* Draw number line once and keep it visible */
+/* Draw number line once */
 function drawNumberLine() {
-  // Always start clean ONCE on load
   container.innerHTML = '<div id="numberLine" class="absolute left-0 right-0 h-1 bg-black"></div>';
 
   for (let i = min; i <= max; i++) {
@@ -41,6 +41,7 @@ function drawNumberLine() {
   updateCursor();
 }
 
+/* Update cursor and label */
 function updateCursor() {
   const cursor = document.getElementById("cursor");
   if (!cursor) return;
@@ -48,6 +49,7 @@ function updateCursor() {
   currentPositionDisplay.textContent = `Current number: ${currentValue}`;
 }
 
+/* Leave a green footprint */
 function leaveFootprint() {
   const footprint = document.createElement("div");
   footprint.className = "footprint";
@@ -55,6 +57,7 @@ function leaveFootprint() {
   container.appendChild(footprint);
 }
 
+/* Mark the start point */
 function markStartPosition(value) {
   container.querySelectorAll(".start-label").forEach(l => l.remove());
   const label = document.createElement("div");
@@ -64,41 +67,43 @@ function markStartPosition(value) {
   container.appendChild(label);
 }
 
-/* Move by any amount (+1, -1, +10, -10) */
+/* Move step-by-step, leaving footprints for each number crossed */
 function moveBy(amount) {
-  // Work one step at a time so footprints appear for each unit
   const step = amount > 0 ? 1 : -1;
   const steps = Math.abs(amount);
 
   for (let i = 0; i < steps; i++) {
-    let newValue = currentValue + step;
-    if (newValue < min || newValue > max) break; // stop at edges
-    currentValue = newValue;
+    const nextValue = currentValue + step;
+    if (nextValue < min || nextValue > max) break;
+    currentValue = nextValue;
     if (startValue !== null && currentValue !== startValue) {
-      leaveFootprint();     // drop a dot for every unit crossed
+      leaveFootprint(); // each number gets a dot
     }
   }
+
   updateCursor();
 }
 
-
-/* Button Events */
+/* Event listeners */
 document.getElementById("setStartBtn").addEventListener("click", () => {
   const val = parseInt(document.getElementById("startNum").value, 10);
   if (Number.isNaN(val) || val < min || val > max) {
     alert(`Please choose a number between ${min} and ${max}`);
     return;
   }
+
   container.querySelectorAll(".footprint, .start-label").forEach(f => f.remove());
   startValue = val;
   currentValue = val;
   markStartPosition(val);
   updateCursor();
 });
+
 document.getElementById("stepForwardBtn").addEventListener("click", () => moveBy(1));
 document.getElementById("stepBackBtn").addEventListener("click", () => moveBy(-1));
 document.getElementById("stepForward10Btn").addEventListener("click", () => moveBy(10));
 document.getElementById("stepBack10Btn").addEventListener("click", () => moveBy(-10));
+
 document.getElementById("resetBtn").addEventListener("click", () => {
   container.querySelectorAll(".footprint, .start-label").forEach(f => f.remove());
   currentValue = 0;
@@ -107,5 +112,7 @@ document.getElementById("resetBtn").addEventListener("click", () => {
 });
 
 /* Initialize */
-window.addEventListener("load", drawNumberLine);
-
+window.addEventListener("load", () => {
+  drawNumberLine();
+  updateCursor();
+});
