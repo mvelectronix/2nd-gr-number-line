@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Number Line Explorer 🔢</title>
+  <title>Dual Number Line Explorer 🔢</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.0/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-gray-900 text-white min-h-screen p-6">
   <div class="max-w-6xl mx-auto">
-    <h1 class="text-3xl font-bold mb-6 text-yellow-400">Number Line Explorer 🧮</h1>
+    <h1 class="text-3xl font-bold mb-6 text-yellow-400">Dual Number Line Explorer 🧮</h1>
 
     <!-- Controls -->
     <div class="flex flex-wrap gap-3 items-center mb-6">
@@ -25,10 +25,13 @@
       <button id="resetBtn" class="btn bg-red-400 hover:bg-red-300">Clear</button>
     </div>
 
-    <!-- Number line -->
-    <div class="rounded-xl shadow-lg p-4 bg-white">
-      <div id="numberLineContainer" class="relative w-full h-44">
-        <div id="numberLine" class="absolute left-0 right-0 h-1 bg-black"></div>
+    <!-- White panel with two number lines -->
+    <div class="rounded-xl shadow-lg bg-white divide-y divide-gray-300">
+      <div id="topLineContainer" class="relative w-full h-32 p-2">
+        <div class="label-title">Line 1</div>
+      </div>
+      <div id="bottomLineContainer" class="relative w-full h-32 p-2">
+        <div class="label-title">Line 2</div>
       </div>
     </div>
 
