@@ -1,17 +1,15 @@
-const min = 0, max = 100;
+const min = -20, max = 120; // extended range
 const container = document.getElementById("numberLineContainer");
 const currentPositionDisplay = document.getElementById("currentPosition");
 let currentValue = 0;
 let startValue = null;
 
-/* Convert a number (0–100) into % position */
 function toPercent(value) {
   return ((value - min) / (max - min)) * 100;
 }
 
-/* Draw number line ONCE — we don’t rebuild it later */
+/* Draw number line */
 function drawNumberLine() {
-  // Baseline
   const line = document.createElement("div");
   line.id = "numberLine";
   line.className = "absolute left-0 right-0 h-1 bg-black";
@@ -19,7 +17,6 @@ function drawNumberLine() {
   line.style.transform = "translateY(-50%)";
   container.appendChild(line);
 
-  // Ticks and labels
   for (let i = min; i <= max; i++) {
     const x = toPercent(i);
 
@@ -36,11 +33,10 @@ function drawNumberLine() {
     const label = document.createElement("div");
     label.className = "label";
     label.style.left = `${x}%`;
-    label.textContent = i.toString();
+    label.textContent = i;
     container.appendChild(label);
   }
 
-  // Blue cursor
   const cursor = document.createElement("div");
   cursor.id = "cursor";
   cursor.className = "cursor";
@@ -49,7 +45,6 @@ function drawNumberLine() {
   updateCursor();
 }
 
-/* Update cursor and status text */
 function updateCursor() {
   const cursor = document.getElementById("cursor");
   if (!cursor) return;
@@ -57,7 +52,6 @@ function updateCursor() {
   currentPositionDisplay.textContent = `Current number: ${currentValue}`;
 }
 
-/* Leave a footprint for actual moves */
 function leaveFootprint() {
   const footprint = document.createElement("div");
   footprint.className = "footprint";
@@ -65,12 +59,8 @@ function leaveFootprint() {
   container.appendChild(footprint);
 }
 
-/* Mark the start number with a red label */
 function markStartPosition(value) {
-  // Remove any existing label first
-  const existing = container.querySelector(".start-label");
-  if (existing) existing.remove();
-
+  container.querySelectorAll(".start-label").forEach(l => l.remove());
   const label = document.createElement("div");
   label.className = "start-label";
   label.style.left = `${toPercent(value)}%`;
@@ -78,8 +68,7 @@ function markStartPosition(value) {
   container.appendChild(label);
 }
 
-/* ===== Buttons ===== */
-
+/* Controls */
 document.getElementById("setStartBtn").addEventListener("click", () => {
   const val = parseInt(document.getElementById("startNum").value, 10);
   if (Number.isNaN(val) || val < min || val > max) {
@@ -87,33 +76,32 @@ document.getElementById("setStartBtn").addEventListener("click", () => {
     return;
   }
 
-  // Remove old footprints and start labels only
   container.querySelectorAll(".footprint, .start-label").forEach(el => el.remove());
-
-  // Set and label the new start
   startValue = val;
   currentValue = val;
   markStartPosition(val);
   updateCursor();
 });
 
-document.getElementById("stepForwardBtn").addEventListener("click", () => {
-  if (currentValue < max) {
-    currentValue += 1;
-    // Drop footprints ONLY after the first move
-    if (startValue !== null && currentValue !== startValue) leaveFootprint();
-    updateCursor();
-  }
-});
+/* Step by 1s */
+document.getElementById("stepForwardBtn").addEventListener("click", () => moveBy(1));
+document.getElementById("stepBackBtn").addEventListener("click", () => moveBy(-1));
 
-document.getElementById("stepBackBtn").addEventListener("click", () => {
-  if (currentValue > min) {
-    currentValue -= 1;
-    if (startValue !== null && currentValue !== startValue) leaveFootprint();
-    updateCursor();
-  }
-});
+/* Step by 10s */
+document.getElementById("stepForward10Btn").addEventListener("click", () => moveBy(10));
+document.getElementById("stepBack10Btn").addEventListener("click", () => moveBy(-10));
 
+function moveBy(amount) {
+  let newValue = currentValue + amount;
+  if (newValue < min) newValue = min;
+  if (newValue > max) newValue = max;
+
+  currentValue = newValue;
+  if (startValue !== null && currentValue !== startValue) leaveFootprint();
+  updateCursor();
+}
+
+/* Reset */
 document.getElementById("resetBtn").addEventListener("click", () => {
   container.querySelectorAll(".footprint, .start-label").forEach(el => el.remove());
   currentValue = 0;
@@ -121,6 +109,7 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   updateCursor();
 });
 
-/* ===== Initialize ===== */
 window.addEventListener("load", () => {
-  drawNumberLine(
+  drawNumberLine();
+  updateCursor();
+});
