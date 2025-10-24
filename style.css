@@ -21,12 +21,11 @@
   background-color: #fde047;
 }
 
-/* Make the line slightly higher so labels fit below it comfortably */
+/* Properly centered baseline */
 #numberLine {
   top: 50%;
 }
 
-/* Tick marks */
 .marker {
   position: absolute;
   top: calc(50% - 10px);
@@ -35,7 +34,6 @@
   background-color: #facc15;
 }
 
-/* Number labels neatly spaced under the line */
 .label {
   position: absolute;
   top: calc(50% + 24px);
@@ -44,7 +42,6 @@
   color: #e5e7eb;
 }
 
-/* Blue circle cursor positioned right on top of the line */
 .cursor {
   position: absolute;
   top: calc(50% - 10px);
@@ -57,7 +54,6 @@
   box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
 }
 
-/* Green dots marking previous jumps */
 .footprint {
   position: absolute;
   top: calc(50% - 5px);
