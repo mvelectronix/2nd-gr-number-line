@@ -66,13 +66,21 @@ function markStartPosition(value) {
 
 /* Move by any amount (+1, -1, +10, -10) */
 function moveBy(amount) {
-  let newValue = currentValue + amount;
-  if (newValue < min) newValue = min;
-  if (newValue > max) newValue = max;
-  currentValue = newValue;
-  if (startValue !== null && currentValue !== startValue) leaveFootprint();
+  // Work one step at a time so footprints appear for each unit
+  const step = amount > 0 ? 1 : -1;
+  const steps = Math.abs(amount);
+
+  for (let i = 0; i < steps; i++) {
+    let newValue = currentValue + step;
+    if (newValue < min || newValue > max) break; // stop at edges
+    currentValue = newValue;
+    if (startValue !== null && currentValue !== startValue) {
+      leaveFootprint();     // drop a dot for every unit crossed
+    }
+  }
   updateCursor();
 }
+
 
 /* Button Events */
 document.getElementById("setStartBtn").addEventListener("click", () => {
@@ -100,3 +108,4 @@ document.getElementById("resetBtn").addEventListener("click", () => {
 
 /* Initialize */
 window.addEventListener("load", drawNumberLine);
+
