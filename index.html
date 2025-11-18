@@ -1,60 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2nd Grade Number Line</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minecraft Number Line Adventure</title>
+
+  <!-- Minecraft pixel font -->
+  <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
+
+  <!-- External stylesheet -->
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-    <div class="container">
-        <header class="hero">
-            <p class="eyebrow">Hop, skip, and jump along the numbers!</p>
-            <h1>Number Line Adventure</h1>
-            <p class="subtitle">Pick a starting spot, then count each hop forward or backward to see how far you travel.</p>
-        </header>
+  <div class="container">
 
-        <section class="number-line-area">
-            <div class="line-card">
-                <div class="line-label-row">
-                    <div class="line-title">Top Trail</div>
-                    <div class="range-pill">0 to 50</div>
-                </div>
-                <div class="number-line" id="lineTop" data-min="0" data-max="50"></div>
-            </div>
+    <header>
+      <h1>Minecraft Number Line</h1>
+      <p class="subtitle">Creeper footprints & connector line included!</p>
+    </header>
 
-            <div class="line-card">
-                <div class="line-label-row">
-                    <div class="line-title">Bottom Trail</div>
-                    <div class="range-pill">21 to 100</div>
-                </div>
-                <div class="number-line" id="lineBottom" data-min="21" data-max="100"></div>
-            </div>
-        </section>
-
-        <div class="input-section">
-            <label for="startNumber">Choose your starting number (0-100):</label>
-            <p class="helper">Your green start marker stays put so you can count how many hops you take.</p>
-            <div class="input-row">
-                <input type="number" id="startNumber" min="0" max="100" value="0">
-                <button id="setStart">Set Start</button>
-            </div>
+    <section class="number-line-area">
+      <div class="line-card">
+        <div class="line-label-row">
+          <div>Top Trail</div>
+          <div class="range-pill">0 - 50</div>
         </div>
+        <div class="number-line" id="lineTop" data-min="0" data-max="50"></div>
+      </div>
 
-        <div class="controls">
-            <button class="control-btn" data-direction="back10">⏪ Back 10</button>
-            <button class="control-btn" data-direction="back1">⬅️ Back 1</button>
-            <button class="control-btn" data-direction="forward1">➡️ Forward 1</button>
-            <button class="control-btn" data-direction="forward10">⏩ Forward 10</button>
-            <button class="control-btn" id="resetBtn">🔄 Reset</button>
+      <div class="line-card">
+        <div class="line-label-row">
+          <div>Bottom Trail</div>
+          <div class="range-pill">51 - 100</div>
         </div>
+        <div class="number-line" id="lineBottom" data-min="51" data-max="100"></div>
+      </div>
+    </section>
 
-        <div class="current-number">
-            <p>Current Number: <span id="currentNumber">0</span></p>
-            <p>Hops from Start: <span id="stepsCount">0</span></p>
-        </div>
+    <div class="input-section">
+      <label style="color:#e4ffd6;">Choose starting number:</label><br><br>
+      <input type="number" id="startNumber" min="0" max="100" value="0" />
+      <button id="setStart">Set Start</button>
     </div>
 
-    <script src="script.js"></script>
+    <div style="text-align:center;">
+      <button class="control-btn" data-direction="back10">⏪ Back 10</button>
+      <button class="control-btn" data-direction="back1">⬅ Back 1</button>
+      <button class="control-btn" data-direction="forward1">➡ Forward 1</button>
+      <button class="control-btn" data-direction="forward10">⏩ Forward 10</button>
+      <button id="resetBtn">🔄 Reset</button>
+    </div>
+
+    <div class="current-number">
+      <p>Current Number: <span id="currentNumber">0</span></p>
+      <p>Hops from Start: <span id="stepsCount">0</span></p>
+    </div>
+
+  </div>
+
+  <!-- External script -->
+  <script src="script.js"></script>
 </body>
 </html>
