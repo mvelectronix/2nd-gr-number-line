@@ -1,82 +1,52 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const lines = Array.from(document.querySelectorAll('.number-line')).map((element) => ({
-        element,
-        min: Number(element.dataset.min),
-        max: Number(element.dataset.max),
-        startMarker: null,
-        currentMarker: null,
-    }));
-
+    // DOM Elements
+    const numberLine = document.getElementById('numberLine');
+    const startMarker = document.getElementById('startMarker');
+    const currentMarker = document.getElementById('currentMarker');
     const startNumberInput = document.getElementById('startNumber');
     const setStartBtn = document.getElementById('setStart');
     const resetBtn = document.getElementById('resetBtn');
     const currentNumberSpan = document.getElementById('currentNumber');
-    const stepsCountSpan = document.getElementById('stepsCount');
 
+    // Variables
     let currentNumber = 0;
     let startNumber = 0;
 
-    const toPercent = (value, min, max) => ((value - min) / (max - min)) * 100;
-    const isWithin = (value, range) => value >= range.min && value <= range.max;
+    const toPercent = (value) => (value / 100) * 100;
 
-    function createMarker(className) {
-        const marker = document.createElement('div');
-        marker.className = `marker ${className}`;
-        marker.textContent = '0';
-        return marker;
-    }
+    // Create number line with labeled ticks every 10 units
+    function createNumberLine() {
+        numberLine.innerHTML = '';
 
-    function buildLine(line) {
-        const { element, min, max } = line;
-        element.innerHTML = '';
-
-        for (let i = min; i <= max; i++) {
+        for (let i = 0; i <= 100; i++) {
             const tick = document.createElement('div');
             tick.className = 'tick';
-            tick.style.left = `${toPercent(i, min, max)}%`;
-            element.appendChild(tick);
+            tick.style.left = toPercent(i) + '%';
+            numberLine.appendChild(tick);
 
-            if (i === min || i === max || i % 10 === 0) {
+            if (i % 10 === 0) {
                 const numberSpan = document.createElement('span');
                 numberSpan.className = 'tick-label';
                 numberSpan.textContent = i;
-                numberSpan.style.left = `${toPercent(i, min, max)}%`;
-                element.appendChild(numberSpan);
+                numberSpan.style.left = toPercent(i) + '%';
+                numberLine.appendChild(numberSpan);
             }
         }
-
-        line.startMarker = createMarker('start-marker');
-        line.currentMarker = createMarker('current-marker');
-        element.appendChild(line.startMarker);
-        element.appendChild(line.currentMarker);
     }
 
-    function placeMarker(marker, line, value) {
-        marker.style.left = `${toPercent(value, line.min, line.max)}%`;
-        marker.textContent = value;
-    }
-
+    // Update positions of markers
     function updateMarkers() {
-        lines.forEach((line) => {
-            const showStart = isWithin(startNumber, line);
-            const showCurrent = isWithin(currentNumber, line);
-
-            line.startMarker.style.display = showStart ? 'flex' : 'none';
-            line.currentMarker.style.display = showCurrent ? 'flex' : 'none';
-
-            if (showStart) {
-                placeMarker(line.startMarker, line, startNumber);
-            }
-
-            if (showCurrent) {
-                placeMarker(line.currentMarker, line, currentNumber);
-            }
-        });
-
+        const position = toPercent(currentNumber);
+        currentMarker.style.left = position + '%';
+        currentMarker.textContent = currentNumber;
         currentNumberSpan.textContent = currentNumber;
-        stepsCountSpan.textContent = Math.abs(currentNumber - startNumber);
+
+        const startPosition = toPercent(startNumber);
+        startMarker.style.left = startPosition + '%';
+        startMarker.textContent = startNumber;
     }
 
+    // Function to handle movement
     function move(direction) {
         if (direction === 'back1') {
             currentNumber = Math.max(0, currentNumber - 1);
@@ -91,24 +61,26 @@ document.addEventListener('DOMContentLoaded', () => {
         updateMarkers();
     }
 
+    // Reset to starting position
     function reset() {
         currentNumber = startNumber;
         updateMarkers();
     }
 
+    // Set the starting number
     function setStartNumber() {
         const value = parseInt(startNumberInput.value, 10);
-
         if (value >= 0 && value <= 100) {
             startNumber = value;
             currentNumber = value;
             updateMarkers();
         } else {
-            alert('Please enter a number between 0 and 100.');
+            alert('Please enter a number between 0 and 100');
         }
     }
 
-    document.querySelectorAll('.control-btn').forEach((button) => {
+    // Event Listeners
+    document.querySelectorAll('.control-btn').forEach(button => {
         button.addEventListener('click', (e) => {
             const direction = e.target.dataset.direction;
             move(direction);
@@ -118,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setStartBtn.addEventListener('click', setStartNumber);
     resetBtn.addEventListener('click', reset);
 
-    lines.forEach(buildLine);
+    // Initialize
+    createNumberLine();
     updateMarkers();
 });
