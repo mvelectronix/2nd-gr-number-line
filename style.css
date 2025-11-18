@@ -5,291 +5,173 @@
 }
 
 body {
-    font-family: 'Comic Sans MS', 'Fredoka', 'Baloo 2', cursive, sans-serif;
-    background: radial-gradient(circle at 20% 20%, #fef4c0, #f7d9ff 35%, #c8f2ff 70%);
-    color: #2f2f3a;
-    padding: 24px;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background-color: #f0f8ff;
+    color: #333;
+    padding: 20px;
 }
 
 .container {
-    max-width: 950px;
+    max-width: 800px;
     margin: 0 auto;
-    background-color: #ffffff;
-    border-radius: 18px;
-    padding: 24px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
-    border: 4px solid #ffd166;
-}
-
-.hero {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.eyebrow {
-    color: #ff7f50;
-    font-weight: 800;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    font-size: 0.95em;
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 h1 {
-    color: #0d6b59;
-    font-size: 2.4em;
-    margin: 6px 0 10px;
+    text-align: center;
+    color: #2c7744;
+    margin-bottom: 10px;
+    font-size: 2.5em;
 }
 
-.subtitle {
-    font-size: 1.1em;
-    color: #34495e;
+p {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    color: #444;
 }
 
-.number-line-area {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 22px;
-    margin: 26px 0 8px;
-}
-
-.line-card {
-    background: linear-gradient(180deg, #f8fbff 0%, #fef6ff 100%);
-    border-radius: 16px;
-    padding: 16px 16px 12px;
-    border: 3px solid #a8dadc;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-}
-
-.line-label-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.line-title {
-    font-size: 1.15em;
-    font-weight: 800;
-    color: #ef476f;
-}
-
-.range-pill {
-    background-color: #06d6a0;
-    color: #0b3b2a;
-    padding: 6px 12px;
-    border-radius: 999px;
-    font-weight: 800;
-    font-size: 0.95em;
-    box-shadow: 0 4px 10px rgba(6, 214, 160, 0.3);
+.number-line-container {
+    position: relative;
+    margin: 40px 0;
+    height: 100px;
 }
 
 .number-line {
     position: relative;
-    height: 110px;
-    padding: 20px 12px 16px;
-    border-radius: 14px;
-    background: #e5f7ff;
+    height: 60px;
+    background-color: #87ceeb;
     border: 3px solid #2c7744;
-    overflow: visible;
-}
-
-.number-line::after {
-    content: '';
-    position: absolute;
-    left: 12px;
-    right: 12px;
-    top: 55%;
-    height: 8px;
-    background: linear-gradient(90deg, #2c7744 0%, #4caf50 100%);
-    border-radius: 20px;
-    opacity: 0.85;
+    border-radius: 10px;
+    margin: 0 auto;
+    width: 90%;
+    padding: 0 10px;
 }
 
 .tick {
     position: absolute;
-    bottom: 26px;
-    width: 3px;
-    height: 32px;
+    bottom: 0;
+    width: 2px;
+    height: 18px;
     background-color: #2c7744;
     transform: translateX(-50%);
 }
 
 .tick-label {
     position: absolute;
-    bottom: 64px;
-    transform: translateX(-50%);
-    font-size: 0.95em;
-    font-weight: 800;
-    color: #184d38;
-    padding: 3px 8px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 10px;
-    border: 2px solid #a3d9a5;
+    transform: translate(-50%, -30px);
+    font-size: 1em;
+    font-weight: bold;
+    color: #333;
 }
 
 .marker {
     position: absolute;
-    top: 14px;
+    top: 10px;
     transform: translateX(-50%);
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
+    background-color: #ff6b6b;
+    border: 3px solid #d32f2f;
     border-radius: 50%;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    font-weight: 800;
-    font-size: 1.1em;
-    color: #fff;
-    z-index: 5;
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
-    transition: left 0.3s ease, transform 0.3s ease;
-}
-
-.marker.start-marker {
-    background: linear-gradient(180deg, #4caf50 0%, #2e7d32 100%);
-    border: 3px solid #1f5d25;
-}
-
-.marker.current-marker {
-    background: linear-gradient(180deg, #ff8a5c 0%, #ff5f6d 100%);
-    border: 3px solid #d74444;
-}
-
-.marker.current-marker::after {
-    content: 'You';
-    position: absolute;
-    top: -26px;
-    background: #fff3cd;
-    color: #c0392b;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 0.75em;
-    border: 2px solid #f5c977;
-    font-weight: 800;
-}
-
-.marker.start-marker::after {
-    content: 'Start';
-    position: absolute;
-    top: -26px;
-    background: #e0f7e9;
-    color: #1b5e20;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 0.75em;
-    border: 2px solid #81c784;
-    font-weight: 800;
-}
-
-.input-section {
-    margin: 22px 0 10px;
-    text-align: center;
-    background: #fffaf0;
-    padding: 16px;
-    border-radius: 14px;
-    border: 2px dashed #ffb347;
-}
-
-.input-section label {
-    font-size: 1.25em;
-    color: #c0392b;
-    font-weight: 800;
-}
-
-.helper {
-    margin-top: 6px;
-    color: #5c3d2e;
-    font-size: 0.98em;
-}
-
-.input-row {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
-    margin-top: 12px;
-    flex-wrap: wrap;
+    font-weight: bold;
+    font-size: 1.2em;
+    color: white;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: left 0.3s ease;
+}
+
+#startMarker {
+    background-color: #4caf50;
+    border-color: #2e7d32;
+}
+
+.input-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+}
+
+label {
+    font-size: 1.3em;
+    margin-bottom: 10px;
+    color: #2c7744;
 }
 
 input {
     width: 150px;
-    height: 46px;
+    height: 40px;
     font-size: 1.2em;
     text-align: center;
-    border: 3px solid #ffb347;
-    border-radius: 10px;
-    background: #fff5e6;
-    color: #5c3d2e;
-    font-weight: 700;
+    border: 2px solid #2c7744;
+    border-radius: 8px;
+    margin-bottom: 15px;
 }
 
 button {
-    font-family: 'Comic Sans MS', 'Fredoka', 'Baloo 2', cursive, sans-serif;
-    font-size: 1.05em;
-    padding: 12px 18px;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-size: 1.2em;
+    padding: 12px 20px;
     margin: 8px;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition: all 0.2s;
     background-color: #4caf50;
     color: white;
-    font-weight: 800;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 button:hover {
-    transform: translateY(-2px) scale(1.01);
-    box-shadow: 0 8px 14px rgba(0, 0, 0, 0.18);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 button:active {
-    transform: translateY(0) scale(0.99);
-}
-
-.controls {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    margin: 12px 0 6px;
+    transform: translateY(0);
 }
 
 .control-btn {
-    background: linear-gradient(135deg, #42a5f5 0%, #1e88e5 100%);
+    background-color: #2196f3;
 }
 
 .control-btn:hover {
-    background: linear-gradient(135deg, #1e88e5 0%, #0d47a1 100%);
+    background-color: #0d47a1;
 }
 
 #resetBtn {
-    background: linear-gradient(135deg, #ffb347 0%, #ff7f50 100%);
+    background-color: #ff9800;
 }
 
 #resetBtn:hover {
-    background: linear-gradient(135deg, #ff7f50 0%, #f06292 100%);
+    background-color: #ef6c00;
 }
 
 .current-number {
     text-align: center;
-    margin-top: 18px;
-    padding: 16px;
-    background: #e8f5e9;
-    border-radius: 14px;
-    border: 3px solid #4caf50;
-    display: grid;
-    gap: 8px;
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #e8f5e9;
+    border-radius: 10px;
+    border: 2px dashed #4caf50;
 }
 
 .current-number p {
-    font-size: 1.3em;
+    font-size: 1.5em;
     color: #2c7744;
-    font-weight: 800;
 }
 
 .current-number span {
-    font-weight: 900;
-    font-size: 1.6em;
+    font-weight: bold;
+    font-size: 1.8em;
     color: #d32f2f;
 }
